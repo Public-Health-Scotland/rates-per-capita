@@ -45,21 +45,21 @@ extract_open_data <- function(resource_id) {
 hb_pop <- extract_open_data("27a72cc8-d6d8-430c-8b4f-3109a9ceadb1") %>% 
 # Formatting the data in the way needed
   filter(year == 2018) %>% #most recent year data
-  select(year, hb2014, allages) %>%
-  group_by(hb2014, year) %>% 
+  select(year, hb, allages) %>%
+  group_by(hb, year) %>% 
   summarise(pop = sum(allages)) #one value per area
 
 # Extract names of health boards
 hb_names <- extract_open_data("395476ab-0720-4740-be07-ff4467141352") %>% 
-  select(hb2014, hb2014name) %>% unique()
+  select(hb, hbname) %>% unique()
 
 # Adding Scotland and taking out NHS
-hb_names <- rbind(hb_names, data.frame(hb2014 = "S92000003", hb2014name = "Scotland")) %>% 
-  mutate(hb2014name = gsub("NHS ", "", hb2014name))
+hb_names <- rbind(hb_names, data.frame(hb = "S92000003", hbname = "Scotland")) %>% 
+  mutate(hbname = gsub("NHS ", "", hbname))
 
 # Merging names and population
-hb_pop <- left_join(hb_pop, hb_names, by = "hb2014") %>% 
-  rename(area_name = hb2014name, area_code = hb2014)
+hb_pop <- left_join(hb_pop, hb_names, by = "hb") %>% 
+  rename(area_name = hbname, area_code = hb)
 
 
 ###############################################.
